@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ethics_engine"
+version = "0.1.0"
+description = "Local, offline-first Ethics Engine (Ollama + Chroma)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb>=1.0.20",
+    "fastapi>=0.116.1",
+    "langchain>=0.3.27",
+    "langchain-community>=0.3.27",
+    "ollama>=0.5.3",
+    "openai>=1.100.1",
+    "python-dotenv>=1.1.1",
+    "rich>=14.1.0",
+    "uvicorn>=0.35.0",
+]
+
+[project.scripts]
+ethicsbot = "ethics_engine.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+package = true

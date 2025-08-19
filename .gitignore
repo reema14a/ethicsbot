@@ -1,0 +1,14 @@
+# venv
+.venv/
+# Python
+__pycache__/
+*.pyc
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+# Env
+.env
+# Data (local persistence)
+data/chroma/
+src/ethics_engine.egg-info/*
