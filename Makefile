@@ -1,4 +1,4 @@
-.PHONY: seed run api
+.PHONY: seed run api watch watch-fast run-fast ui
 
 # Seed the ChromaDB with incidents
 seed:
@@ -8,6 +8,8 @@ seed:
 api:
 	uvicorn ethics_engine.api.main:app --reload --host 0.0.0.0 --port 8000
 
+ui:
+	uv run python -m ethics_engine.ui.app
 # Run a quick CLI analysis
 run:
 	ethicsbot run --q "AI for job screening using resumes"
