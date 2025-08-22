@@ -3,6 +3,8 @@ import argparse
 from rich import print
 from .store import seed_from_jsonl
 from .analyze import analyze_use_case
+from .watchdog.pipeline import run_watchdog
+from .watchdog.report import print_report
 
 def _cmd_seed(file: str) -> None:
     n = seed_from_jsonl(file)
@@ -22,6 +24,11 @@ def _cmd_run(q: str, k: int, stream: bool, model: str | None, show_incidents: bo
     if not stream:
         print(out)
 
+def _cmd_watch(text: str, k: int, model: str | None, no_stream: bool) -> None:
+    print("[bold]Running Watchdog[/bold]\n")
+    rep = run_watchdog(text, k=k, stream=not no_stream, model=model)
+    print_report(rep)
+
 def main():
     ap = argparse.ArgumentParser("Ethics Engine CLI")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -36,6 +43,12 @@ def main():
     p_run.add_argument("--model", help="Override model name (e.g., llama3:8b)")
     p_run.add_argument("--show-incidents", action="store_true", help="Print retrieved incidents before analysis")
 
+    p_watch = sub.add_parser("watch", help="Assess text for likely misinformation")
+    p_watch.add_argument("--text", required=True, help="Paste the text to assess (quotes recommended)")
+    p_watch.add_argument("--k", type=int, default=3)
+    p_watch.add_argument("--model", help="Override model (e.g., llama3:8b)")
+    p_watch.add_argument("--no-stream", action="store_true")
+
     args = ap.parse_args()
 
     if args.cmd == "seed":
@@ -43,3 +56,5 @@ def main():
     elif args.cmd == "run":
         stream = not args.no_stream  # default True unless --no-stream is provided
         _cmd_run(args.q, args.k, stream, args.model, args.show_incidents)
+    elif args.cmd == "watch":
+        _cmd_watch(args.text, args.k, args.model, args.no_stream)
