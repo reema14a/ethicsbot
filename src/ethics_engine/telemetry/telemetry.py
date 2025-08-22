@@ -115,6 +115,7 @@ def setup_logging() -> logging.Logger:
     logger.addHandler(sh)
 
     if log_file:
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
         fh = RotatingFileHandler(log_file, maxBytes=2_000_000, backupCount=3)
         fh.setLevel(lvl)
         fh.setFormatter(fmt)

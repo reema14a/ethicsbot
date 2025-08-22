@@ -12,3 +12,7 @@ __pycache__/
 # Data (local persistence)
 data/chroma/
 src/ethics_engine.egg-info/*
+#Logs
+logs/
+*.log
+*.log.*
