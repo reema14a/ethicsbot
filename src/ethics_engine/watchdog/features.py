@@ -4,7 +4,7 @@ from typing import Dict
 
 SENSATIONAL_PATTERNS = [
     r"shocking", r"you won't believe", r"exposed", r"the truth (they|they're) hiding",
-    r"secret plan", r"BREAKING", r"urgent", r"!!!"
+    r"secret plan", r"breaking", r"urgent", r"!!!"
 ]
 
 def heuristic_scores(text: str) -> Dict[str, float]:

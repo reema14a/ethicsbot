@@ -1,4 +1,4 @@
-.PHONY: seed run api watch watch-fast run-fast ui
+.PHONY: seed run api watch watch-fast run-fast ui dev-ui
 
 # Seed the ChromaDB with incidents
 seed:
@@ -10,6 +10,14 @@ api:
 
 ui:
 	uv run python -m ethics_engine.ui.app
+
+dev-ui:
+	uv run watchmedo auto-restart \
+	  --directory=ethics_engine \
+	  --pattern="*.py" \
+	  --recursive \
+	  -- uv run python -m ethics_engine.ui.app
+
 # Run a quick CLI analysis
 run:
 	ethicsbot run --q "AI for job screening using resumes"
