@@ -1,0 +1,105 @@
+{"ts": "2025-08-22T23:09:44", "level": "INFO", "logger": "ethicsbot.watchdog.ui", "msg": "Assess: start"}
+{"ts": "2025-08-22T23:09:44", "level": "INFO", "logger": "ethicsbot.watchdog.ui", "msg": "Initializing pipeline & dependencies"}
+{"ts": "2025-08-22T23:09:44", "level": "INFO", "logger": "ethicsbot.watchdog.ui", "msg": "Vector store ready"}
+{"ts": "2025-08-22T23:09:44", "level": "INFO", "logger": "ethicsbot.watchdog.pipeline", "msg": "watchdog.run.start", "run_id": "f391b312", "stage": "start"}
+{"ts": "2025-08-22T23:09:44", "level": "INFO", "logger": "ethicsbot.watchdog.pipeline", "msg": "claims.done", "run_id": "f391b312", "stage": "claims", "elapsed_ms": 0}
+{"ts": "2025-08-22T23:09:54", "level": "INFO", "logger": "ethicsbot.watchdog.pipeline", "msg": "retrieve.done", "run_id": "f391b312", "stage": "retrieve", "elapsed_ms": 9944}
+{"ts": "2025-08-22T23:09:54", "level": "INFO", "logger": "ethicsbot.watchdog.pipeline", "msg": "heuristics.done", "run_id": "f391b312", "stage": "heuristics", "elapsed_ms": 0}
+{"ts": "2025-08-22T23:18:16", "level": "ERROR", "logger": "ethicsbot.watchdog.pipeline", "msg": "watchdog.run.error", "run_id": "f391b312", "exc": "Traceback (most recent call last):\n  File \"/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/watchdog/pipeline.py\", line 105, in run_watchdog\n    span.set_attribute(\"summary.len\", len(llm_text))\n                                      ^^^^^^^^^^^^^\nTypeError: object of type 'AIMessage' has no len()"}
+{"ts": "2025-08-22T23:18:16", "level": "ERROR", "logger": "ethicsbot.watchdog.ui", "msg": "Unhandled error during assessment", "exc": "Traceback (most recent call last):\n  File \"/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/ui/app.py\", line 125, in assess_text\n    rep: WatchReport = run_watchdog(\n                       ^^^^^^^^^^^^^\n  File \"/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/watchdog/pipeline.py\", line 105, in run_watchdog\n    span.set_attribute(\"summary.len\", len(llm_text))\n                                      ^^^^^^^^^^^^^\nTypeError: object of type 'AIMessage' has no len()"}
+[2025-08-22 23:37:29,940] INFO ethicsbot.watchdog.ui: Assess: start
+[2025-08-22 23:37:29,967] INFO ethicsbot.watchdog.ui: Initializing pipeline & dependencies
+[2025-08-22 23:37:29,967] INFO ethicsbot.watchdog.ui: Vector store ready
+[2025-08-22 23:37:29,967] INFO ethicsbot.watchdog.pipeline: watchdog.run.start
+[2025-08-22 23:37:29,968] INFO ethicsbot.watchdog.pipeline: claims.done
+[2025-08-22 23:37:31,383] INFO ethicsbot.watchdog.pipeline: retrieve.done
+[2025-08-22 23:37:31,384] INFO ethicsbot.watchdog.pipeline: heuristics.done
+[2025-08-22 23:37:31,386] INFO ethicsbot.watchdog.pipeline: llm.prompt (full) len=793 sha=fcde6d534c86 claims=2 signals=3 incidents=2 :: You are a misinformation watchdog assistant. The user gave this content:
+
+BREAKING: Secret plan exposed! A new AI will fire all nurses by next week without notice.
+
+Claims (rough):
+- BREAKING: Secret plan exposed!
+- A new AI will fire all nurses by next week without notice.
+
+Heuristic signals (0..1):
+- sensational_language: 0.67
+- missing_source: 0.00
+- time_ambiguity: 0.50
+
+Similar past incidents:
+- Microsoft Tay was manipulated on Twitter and produced toxic outputs.
+- COMPAS recidivism scores showed racial bias in risk assessment.
+
+Task:
+- Briefly explain the top 2–3 risks and why they apply.
+- Suggest 3 concrete verification steps a non-technical person can do offline (dates, reverse image steps, local corroboration, sourcing).
+- Keep it under 180 words, bullet points preferred.
+
+[2025-08-22 23:45:23,960] DEBUG ethicsbot.watchdog.pipeline: llm.invoke.return_type
+[2025-08-22 23:45:23,964] INFO ethicsbot.watchdog.pipeline: llm.summary.done
+[2025-08-22 23:45:23,965] INFO ethicsbot.watchdog.pipeline: aggregate.done
+[2025-08-22 23:45:23,965] INFO ethicsbot.watchdog.pipeline: watchdog.run.end
+[2025-08-22 23:45:23,981] INFO ethicsbot.watchdog.ui: Watchdog analysis complete
+[2025-08-22 23:45:23,983] INFO ethicsbot.watchdog.ui: Assess: done
+[2025-08-23 00:24:35,255] INFO ethicsbot.watchdog.ui: Assess: start | taskName=None
+[2025-08-23 00:24:35,279] INFO ethicsbot.watchdog.ui: Initializing pipeline & dependencies | taskName=None
+[2025-08-23 00:24:35,279] INFO ethicsbot.watchdog.ui: Vector store ready | taskName=None
+[2025-08-23 00:24:35,280] INFO ethicsbot.watchdog.pipeline: watchdog.run.start | run_id=bf0d55c3 stage=start taskName=None
+[2025-08-23 00:24:35,280] INFO ethicsbot.watchdog.pipeline: claims.done | claims.count=2 elapsed_ms=0 run_id=bf0d55c3 stage=claims taskName=None
+[2025-08-23 00:24:37,084] INFO ethicsbot.watchdog.pipeline: retrieve.done | elapsed_ms=1803 retrieve.count=2 run_id=bf0d55c3 stage=retrieve taskName=None
+[2025-08-23 00:24:37,087] INFO ethicsbot.watchdog.pipeline: heuristics.done | elapsed_ms=1 risk.base=0.667 risk.boost=0.2 risk.overall=0.867 run_id=bf0d55c3 signals.count=3 stage=heuristics taskName=None
+[2025-08-23 00:24:37,088] ERROR ethicsbot.watchdog.pipeline: watchdog.run.error
+Traceback (most recent call last):
+  File "/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/watchdog/pipeline.py", line 133, in run_watchdog
+    _log_prompt(prompt, run_id=run_id, stage="llm", claims_cnt=len(claims), signals_cnt=len(signals), incidents_cnt=len(related), span=span)
+  File "/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/telemetry/promptlog.py", line 56, in _log_prompt
+    logger.info(
+    ^^^^^^
+NameError: name 'logger' is not defined | run_id=bf0d55c3 taskName=None
+[2025-08-23 00:24:37,126] ERROR ethicsbot.watchdog.ui: Unhandled error during assessment
+Traceback (most recent call last):
+  File "/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/ui/app.py", line 116, in assess_text
+    rep: WatchReport = run_watchdog(
+                       ^^^^^^^^^^^^^
+  File "/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/watchdog/pipeline.py", line 133, in run_watchdog
+    _log_prompt(prompt, run_id=run_id, stage="llm", claims_cnt=len(claims), signals_cnt=len(signals), incidents_cnt=len(related), span=span)
+  File "/Users/reema14a/Documents/Projects/EthicsBot/ethicsbot/src/ethics_engine/telemetry/promptlog.py", line 56, in _log_prompt
+    logger.info(
+    ^^^^^^
+NameError: name 'logger' is not defined | taskName=None
+[2025-08-23 00:40:39,838] INFO ethicsbot.watchdog.ui: Assess: start
+[2025-08-23 00:40:39,879] INFO ethicsbot.watchdog.ui: Initializing pipeline & dependencies
+[2025-08-23 00:40:39,880] INFO ethicsbot.watchdog.ui: Vector store ready
+[2025-08-23 00:40:39,880] INFO ethicsbot.watchdog.pipeline: watchdog.run.start | run_id=b594de5c stage=start
+[2025-08-23 00:40:39,881] INFO ethicsbot.watchdog.pipeline: claims.done | claims.count=2 elapsed_ms=0 run_id=b594de5c stage=claims
+[2025-08-23 00:40:41,378] INFO ethicsbot.watchdog.pipeline: retrieve.done | elapsed_ms=1497 retrieve.count=2 run_id=b594de5c stage=retrieve
+[2025-08-23 00:40:41,380] INFO ethicsbot.watchdog.pipeline: heuristics.done | elapsed_ms=1 risk.base=0.667 risk.boost=0.2 risk.overall=0.867 run_id=b594de5c signals.count=3 stage=heuristics
+[2025-08-23 00:40:41,381] INFO ethicsbot.telemetry.prompt: llm.prompt (full) len=793 sha=fcde6d534c86 claims=2 signals=3 incidents=2 :: You are a misinformation watchdog assistant. The user gave this content:
+
+BREAKING: Secret plan exposed! A new AI will fire all nurses by next week without notice.
+
+Claims (rough):
+- BREAKING: Secret plan exposed!
+- A new AI will fire all nurses by next week without notice.
+
+Heuristic signals (0..1):
+- sensational_language: 0.67
+- missing_source: 0.00
+- time_ambiguity: 0.50
+
+Similar past incidents:
+- Microsoft Tay was manipulated on Twitter and produced toxic outputs.
+- COMPAS recidivism scores showed racial bias in risk assessment.
+
+Task:
+- Briefly explain the top 2–3 risks and why they apply.
+- Suggest 3 concrete verification steps a non-technical person can do offline (dates, reverse image steps, local corroboration, sourcing).
+- Keep it under 180 words, bullet points preferred.
+ | run_id=b594de5c stage=llm
+[2025-08-23 00:48:19,297] DEBUG ethicsbot.watchdog.pipeline: llm.invoke.return_type | run_id=b594de5c stage=llm type=str
+[2025-08-23 00:48:19,300] INFO ethicsbot.watchdog.pipeline: llm.summary.done | elapsed_ms=457917 run_id=b594de5c stage=llm
+[2025-08-23 00:48:19,301] INFO ethicsbot.watchdog.pipeline: aggregate.done | elapsed_ms=0 label=Likely Misinfo run_id=b594de5c stage=aggregate
+[2025-08-23 00:48:19,302] INFO ethicsbot.watchdog.pipeline: watchdog.run.end | elapsed_ms=459420 label=Likely Misinfo risk=0.87 run_id=b594de5c stage=end
+[2025-08-23 00:48:19,320] INFO ethicsbot.watchdog.ui: Watchdog analysis complete
+[2025-08-23 00:48:19,322] INFO ethicsbot.watchdog.ui: Assess: done

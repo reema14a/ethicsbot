@@ -6,21 +6,42 @@ from typing import Tuple, List
 import gradio as gr
 
 from ethics_engine.watchdog.pipeline import run_watchdog
-from ethics_engine.watchdog.report import WatchReport  # dataclass
-from ethics_engine.store import get_vectorstore  # ensures DB path exists
+from ethics_engine.watchdog.schemas import WatchReport  
+from ethics_engine.store import get_vectorstore  
 
-# -----------------------------------------------------------------------------
-# Logging
-# -----------------------------------------------------------------------------
+from ethics_engine.telemetry.telemetry import setup_logging, SafeKVFormatter
+from ethics_engine.telemetry.telemetry_context import RunIdFilter
+import uuid
+from ethics_engine.telemetry.telemetry_context import run_id_var, session_id_var
+
+setup_logging()
+logging.getLogger("ethicsbot").addFilter(RunIdFilter())
+
+# Optional tracing 
+# from ethics_engine.telemetry import setup_tracing
+# setup_tracing(service_name="ethicsbot")
+
+# Keep a named UI logger for convenience
 logger = logging.getLogger("ethicsbot.watchdog.ui")
-if not logger.handlers:
-    logger.setLevel(logging.INFO)
-    _h = logging.StreamHandler()
-    _h.setFormatter(logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s"))
-    logger.addHandler(_h)
 
 # Ensure vectorstore can initialize even if not yet seeded (will just be empty)
 _ = get_vectorstore()
+
+class _ListHandler(logging.Handler):
+    def __init__(self, sink_list):
+        super().__init__(level=logging.DEBUG) 
+        self.sink = sink_list
+        # SafeKVFormatter appends any extras (run_id, stage, payload_type, elapsed_ms, …) as k=v
+        self.setFormatter(SafeKVFormatter(
+            "[%(asctime)s] %(levelname)s %(name)s: %(message)s"
+        ))
+
+    def emit(self, record: logging.LogRecord):
+        try:
+            self.sink.append(self.format(record))
+        except Exception:
+            pass
+
 
 DEFAULT_PLACEHOLDER = (
     "Paste a post, message, or claim here. Example:\n\n"
@@ -52,6 +73,7 @@ def assess_text(
     model: str,
     streaming: bool,
     progress: gr.Progress = gr.Progress(track_tqdm=False),
+    session_id: str | None = None,
 ) -> Tuple[str, str, List[List[str]], str, str]:
     """
     Returns:
@@ -62,6 +84,15 @@ def assess_text(
       - ui logs (string)
     """
     ui_logs: List[str] = []
+    
+    # Attach a per-run handler that mirrors *all* ethicsbot logs to UI
+    list_handler = _ListHandler(ui_logs)
+    root = logging.getLogger("ethicsbot")
+    root.addHandler(list_handler)
+
+    # Set correlation IDs for this run (visible in console + UI logs)
+    run_id_token = run_id_var.set(uuid.uuid4().hex[:8])
+    session_token = session_id_var.set(session_id)
 
     def log(msg: str):
         logger.info(msg)
@@ -133,6 +164,12 @@ def assess_text(
         # Return safe fallbacks to keep UI responsive
         return ("**Error**", "", [], "An error occurred. Check logs.", "\n".join(ui_logs))
 
+    finally:
+        # Clean up per-run handler and restore contextvars
+        root.removeHandler(list_handler)
+        run_id_var.reset(run_id_token)
+        session_id_var.reset(session_token)
+
 # -----------------------------------------------------------------------------
 # UI
 # -----------------------------------------------------------------------------
@@ -141,6 +178,14 @@ def build_ui():
         title="EthicsBot Watchdog",
         css=".wrap {max-width: 900px; margin: auto;}"
     ) as demo:
+        session_state = gr.State()  # holds session_id
+
+        def _init_session():
+            # short, human-friendly id
+            return uuid.uuid4().hex[:6]
+
+        demo.load(fn=_init_session, inputs=None, outputs=session_state)
+
         gr.Markdown("# 🛡️ EthicsBot Watchdog\nPaste a claim and get an offline assessment with next steps to verify.")
 
         with gr.Row():
@@ -182,7 +227,7 @@ def build_ui():
         # 2) Run assess (with built-in progress bar)
         ev = ev.then(
             fn=assess_text,
-            inputs=[text, k, model, streaming],
+            inputs=[text, k, model, streaming, session_state],
             outputs=[badge, signals_md, incidents, summary, ui_logs],
             show_progress="full",
         )
