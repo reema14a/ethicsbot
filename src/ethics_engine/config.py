@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Model to use via Ollama (must be pulled separately with `ollama pull`)
-MODEL = os.getenv("ETHICSBOT_MODEL", "gpt-oss:20b")  # e.g. "gpt-oss:20b" or "llama3"
+MODEL = os.getenv("ETHICSBOT_MODEL", "gpt-oss-20b-fast")  # e.g. "gpt-oss:20b" or "llama3"
 EMBED_MODEL = os.getenv("ETHICSBOT_EMBED_MODEL", "nomic-embed-text")  # e.g. "gpt-oss:20b" or "llama3"
 
 # Where to persist the Chroma vector DB
