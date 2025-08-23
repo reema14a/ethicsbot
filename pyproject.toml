@@ -27,6 +27,7 @@ dependencies = [
     "python-dotenv>=1.1.1",
     "rich>=14.1.0",
     "uvicorn>=0.35.0",
+    "watchdog>=6.0.0",
 ]
 
 [project.scripts]
@@ -41,4 +42,6 @@ package = true
 [dependency-groups]
 dev = [
     "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "pytest-xdist>=3.8.0",
 ]

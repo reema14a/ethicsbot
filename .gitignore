@@ -16,3 +16,8 @@ src/ethics_engine.egg-info/*
 logs/
 *.log
 *.log.*
+# Coverage artifacts
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
